@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TokenScope — 大模型 Token 成本计算与对比工具</title>
+<meta name="description" content="TokenScope：输入 Token 用量，一键算清各大模型的日/月成本，可视化对比最省方案。">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <div>
+      <h1>TokenScope</h1>
+      <p class="subtitle">大模型 Token 成本计算与对比工具</p>
+    </div>
+    <p class="header-note">选模型之前，先算清账。</p>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- 场景预设 -->
+  <section class="card" aria-labelledby="preset-title">
+    <h2 id="preset-title">场景预设</h2>
+    <p class="hint">一键填入典型参数，再按你的真实业务微调。</p>
+    <div class="preset-row">
+      <button type="button" class="preset-btn" data-preset="support">💬 客服对话</button>
+      <button type="button" class="preset-btn" data-preset="code">💻 代码助手</button>
+      <button type="button" class="preset-btn" data-preset="summary">📄 长文档摘要</button>
+      <button type="button" class="preset-btn" data-preset="chat">🤖 通用聊天机器人</button>
+    </div>
+    <p class="hint" id="preset-desc">客服对话：一问一答较短，但全天请求量大。</p>
+  </section>
+
+  <!-- 成本计算器 -->
+  <section class="card" aria-labelledby="calc-title">
+    <h2 id="calc-title">成本计算器</h2>
+    <div class="grid-2">
+      <div class="controls">
+        <label for="model-select">模型</label>
+        <select id="model-select"></select>
+
+        <label for="input-tokens">单次输入 Tokens：<span id="input-tokens-val">2000</span></label>
+        <div class="slider-row">
+          <input type="range" id="input-tokens" min="0" max="200000" step="100" value="2000">
+          <input type="number" id="input-tokens-num" min="0" max="10000000" step="100" value="2000">
+        </div>
+
+        <label for="output-tokens">单次输出 Tokens：<span id="output-tokens-val">800</span></label>
+        <div class="slider-row">
+          <input type="range" id="output-tokens" min="0" max="50000" step="50" value="800">
+          <input type="number" id="output-tokens-num" min="0" max="1000000" step="50" value="800">
+        </div>
+
+        <label for="daily-requests">每日请求数</label>
+        <input type="number" id="daily-requests" min="0" max="100000000" step="10" value="1000">
+
+        <label for="exchange-rate">汇率（1 美元 = ? 人民币，可编辑）</label>
+        <input type="number" id="exchange-rate" min="0.01" max="100" step="0.01" value="7.20">
+      </div>
+
+      <div class="result-box" aria-live="polite">
+        <h3 id="result-model-name">—</h3>
+        <dl class="result-list">
+          <div><dt>单次成本</dt><dd id="cost-once">—</dd></div>
+          <div><dt>日成本</dt><dd id="cost-day">—</dd></div>
+          <div class="highlight"><dt>月成本（按 30 天）</dt><dd id="cost-month">—</dd></div>
+        </dl>
+        <p class="hint" id="cost-detail">—</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 模型对比 -->
+  <section class="card" aria-labelledby="compare-title">
+    <h2 id="compare-title">模型对比（按当前参数）</h2>
+    <p class="hint">以下为<strong>参考价，可编辑</strong>：根据公开资料整理，并非实时官方报价。直接修改表格里的单价，所有计算与图表会实时更新；点“恢复参考价”可还原。</p>
+    <div class="table-wrap">
+      <table id="model-table">
+        <thead>
+          <tr>
+            <th>模型</th>
+            <th>厂商</th>
+            <th>输入价 $/1M tokens</th>
+            <th>输出价 $/1M tokens</th>
+            <th>月成本（当前参数）</th>
+          </tr>
+        </thead>
+        <tbody id="model-tbody"></tbody>
+      </table>
+    </div>
+    <button type="button" id="reset-prices" class="secondary-btn">恢复参考价</button>
+
+    <h3 class="chart-title">月成本对比</h3>
+    <div id="bar-chart" class="bar-chart" aria-label="各模型月成本条形图"></div>
+    <p class="saving" id="saving-text">—</p>
+  </section>
+
+  <!-- Token 估算器 -->
+  <section class="card" aria-labelledby="est-title">
+    <h2 id="est-title">Token 估算器</h2>
+    <p class="hint">粘贴一段文本，估算它大约有多少 tokens，以及在各模型上跑一次要花多少钱。估算方法：中文按字数、英文按单词与字符的通用近似算法，<strong>结果为近似估算</strong>，与各厂商 tokenizer 的精确值会有偏差。</p>
+    <textarea id="est-text" rows="6" placeholder="把你的提示词、文档或对话粘贴到这里……"></textarea>
+    <div class="est-actions">
+      <button type="button" id="est-sample" class="secondary-btn">填入示例文本</button>
+      <button type="button" id="est-clear" class="secondary-btn">清空</button>
+    </div>
+    <p class="est-result" aria-live="polite">字符数：<strong id="est-chars">0</strong> · 估算 Tokens：<strong id="est-tokens">0</strong></p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>模型</th><th>这段文本跑一次的成本（仅输入）</th></tr></thead>
+        <tbody id="est-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card about">
+    <h2>关于 TokenScope</h2>
+    <p>同样一个 AI 应用，换一个模型，月成本可能差出几十倍。TokenScope 把“输入/输出单价 × 用量”这笔账摊开算清楚：先估用量，再比价格，最后选方案。纯静态网页，零依赖，数据不出浏览器。</p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>TokenScope · 价格为参考价、可编辑，请以各厂商官网最新报价为准 · MIT License</p>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
