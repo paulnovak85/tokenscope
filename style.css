@@ -1,0 +1,66 @@
+:root{
+  --bg:#0f172a; --panel:#ffffff; --page:#f1f5f9; --ink:#0f172a; --muted:#64748b;
+  --accent:#2563eb; --accent-dark:#1d4ed8; --good:#059669; --line:#e2e8f0;
+  --radius:12px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--page);color:var(--ink);line-height:1.6}
+.container{max-width:1080px;margin:0 auto;padding:0 16px}
+.site-header{background:var(--bg);color:#fff;padding:28px 0}
+.header-inner{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.site-header h1{margin:0;font-size:32px;letter-spacing:.5px}
+.subtitle{margin:4px 0 0;color:#cbd5e1;font-size:15px}
+.header-note{margin:0;color:#94a3b8;font-size:14px}
+main{padding:24px 0 8px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;margin-bottom:20px;box-shadow:0 1px 2px rgba(15,23,42,.04)}
+.card h2{margin:0 0 8px;font-size:20px}
+.card h3{font-size:16px}
+.hint{color:var(--muted);font-size:13.5px;margin:6px 0 12px}
+.preset-row{display:flex;gap:10px;flex-wrap:wrap}
+.preset-btn,.secondary-btn{border:1px solid var(--line);background:#f8fafc;border-radius:999px;padding:8px 16px;font-size:14px;cursor:pointer;color:var(--ink)}
+.preset-btn:hover,.secondary-btn:hover{border-color:var(--accent);color:var(--accent-dark)}
+.preset-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.controls label{display:block;font-weight:600;font-size:14px;margin:14px 0 6px}
+.controls label:first-child{margin-top:0}
+.controls select,.controls input[type="number"]{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:15px;background:#fff}
+.slider-row{display:flex;gap:10px;align-items:center}
+.slider-row input[type="range"]{flex:1;accent-color:var(--accent)}
+.slider-row input[type="number"]{width:110px;flex:none}
+.result-box{background:#f8fafc;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;align-self:start}
+.result-box h3{margin:0 0 10px;color:var(--accent-dark)}
+.result-list{margin:0}
+.result-list>div{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line)}
+.result-list>div:last-child{border-bottom:none}
+.result-list dt{color:var(--muted)}
+.result-list dd{margin:0;font-weight:700;text-align:right}
+.result-list .highlight dd{color:var(--good);font-size:18px}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:560px}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;white-space:nowrap}
+th{background:#f8fafc;color:#334155}
+td input[type="number"]{width:96px;padding:5px 7px;border:1px solid var(--line);border-radius:6px;font-size:14px}
+tr.cheapest td{background:#ecfdf5;font-weight:600}
+.secondary-btn{margin-top:12px;border-radius:8px}
+.chart-title{margin:22px 0 10px}
+.bar-chart{display:flex;flex-direction:column;gap:8px}
+.bar-row{display:grid;grid-template-columns:170px 1fr 120px;gap:10px;align-items:center;font-size:13.5px}
+.bar-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{background:#e2e8f0;border-radius:6px;height:20px;overflow:hidden}
+.bar-fill{background:var(--accent);height:100%;border-radius:6px;min-width:2px;transition:width .25s ease}
+.bar-row.cheapest .bar-fill{background:var(--good)}
+.bar-row.cheapest .bar-name{font-weight:700;color:var(--good)}
+.bar-value{text-align:right;font-variant-numeric:tabular-nums}
+.saving{margin-top:14px;font-weight:600;color:var(--good);font-size:15px}
+textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font-size:14.5px;font-family:inherit;resize:vertical}
+.est-actions{display:flex;gap:10px}
+.est-actions .secondary-btn{margin-top:10px}
+.est-result{font-size:15px}
+.about p{margin:6px 0 0;color:#334155}
+.site-footer{padding:18px 0 30px;color:var(--muted);font-size:13px;text-align:center}
+@media (max-width:720px){
+  .grid-2{grid-template-columns:1fr}
+  .site-header h1{font-size:26px}
+  .bar-row{grid-template-columns:110px 1fr 92px;font-size:12.5px}
+  .card{padding:16px}
+}
